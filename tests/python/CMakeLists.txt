@@ -1,0 +1,2 @@
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/python_test.py" DESTINATION "${CMAKE_BINARY_DIR}/")
+

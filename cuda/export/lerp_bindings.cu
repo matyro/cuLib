@@ -7,6 +7,14 @@ namespace py = pybind11;
 #include "cuLib/memory.cuh"
 #include "cuLib/context.cuh"
 
+#define FUNCTION_STYLE 1
+#undef DIRECT_STYLE
+
+/* It will work with 
+#undef FUNCTION_STYLE
+#define DIRECT_STYLE 1
+*/
+
 __global__ void lerp_kernel(cudaTextureObject_t tex, float* io, const unsigned int N)
 {int idx = threadIdx.x + blockDim.x * blockIdx.x;
     if (idx >= N)
@@ -16,8 +24,13 @@ __global__ void lerp_kernel(cudaTextureObject_t tex, float* io, const unsigned i
     io[idx] = tex2D<float>(tex, tex_coords, 1 );    
 }
 
+#ifdef DIRECT_STYLE
+
 std::vector<double> execute_lerp(std::vector<double> input, std::vector<float> table, double scale)
-{       
+{   
+    std::cout << "#########################################" << std::endl;    
+    std::cout << "Direct Style" << std::endl;
+    std::cout << "#########################################" << std::endl;
     cudaError_t last_error_;
 
     Memory<float> io(input.size());
@@ -73,10 +86,13 @@ std::vector<double> execute_lerp(std::vector<double> input, std::vector<float> t
     return std::vector<double>(io.begin(), io.end());
 }
 
+#elif FUNCTION_STYLE
 
-/*
 std::vector<double> execute_lerp(std::vector<double> input, std::vector<float> table, double scale)
 {
+    std::cout << "#########################################" << std::endl;    
+    std::cout << "Function Style" << std::endl;
+    std::cout << "#########################################" << std::endl;
     Context cudaContext(0);  
     cudaContext.synchronize(); 
 
@@ -103,7 +119,11 @@ std::vector<double> execute_lerp(std::vector<double> input, std::vector<float> t
 
     std::copy(io.begin(), io.end(), result.begin());
     return result;
-}*/
+}
+
+#else
+#warning "No style defined"
+#endif
 
 /*
 py::array_t<double> execute_lerp_numpy(py::array_t<float, py::array::c_style | py::array::forcecast> tablePy, double scale, py::array_t<double, py::array::c_style | py::array::forcecast> inputPy)

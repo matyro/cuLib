@@ -1,7 +1,7 @@
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-
-pybind11_add_module(cuda_python SHARED "lerp_bindings.cu")
+pybind11_add_module(cuda_python SHARED "cuda_bindings.cu" "lerp_bindings.cu")
 
 
 target_include_directories(cuda_python PRIVATE
