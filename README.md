@@ -4,6 +4,9 @@ Problematic cuda behavior test
 # Compile:
 
 ```
+git clone --recurse-submodules https://github.com/matyro/cuLib.git
+cd cuLib
+
 mkdir build
 cd build
 cmake ..
