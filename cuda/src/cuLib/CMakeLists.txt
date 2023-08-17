@@ -1,0 +1,1 @@
+target_sources(CudaLib PUBLIC "context.cu" "texture.cu")
